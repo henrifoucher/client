@@ -1,0 +1,29 @@
+---
+import GuitarCard from "./GuitarCard.astro";
+
+const { guitars, showBrand } = Astro.props;
+---
+
+<style>
+    ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+        grid-gap: var(--s4);
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
+<ul>
+    {
+        guitars.map((guitar) => (
+            <li data-brand={guitar.brand?.slug}>
+                <a href={`/brands/${guitar.id}`}>
+                    <GuitarCard guitar={guitar} showBrand={showBrand} />
+                </a>
+            </li>
+        ))
+    }
+</ul>

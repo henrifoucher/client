@@ -1,0 +1,26 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import GuitarCard from "../../components/GuitarCard.astro";
+import fetchApi from "../../lib/strapi";
+
+export async function getStaticPaths() {
+  const guitars = await fetchApi({
+    endpoint: "guitars",
+    wrappedByKey: "data",
+    query: { populate: ["image", "brand"] },
+  });
+
+  const paths = guitars.map((guitar) => ({
+    params: { id: guitar.id.toString() },
+    props: { guitar },
+  }));
+
+  return paths;
+}
+
+const { guitar } = Astro.props;
+---
+
+<Layout pageTitle={guitar.name}>
+  <GuitarCard guitar={guitar} />
+</Layout>

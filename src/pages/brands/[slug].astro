@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import GuitarList from "../../components/GuitarList.astro";
+import fetchApi from "../../lib/strapi";
+
+export async function getStaticPaths() {
+  const brands = await fetchApi({
+    endpoint: "brands",
+    wrappedByKey: "data",
+    query: { "populate[0]": "guitars", "populate[1]": "products.image" },
+  });
+
+  const paths = brands.map((brand) => ({
+    params: { slug: brand.slug },
+    props: {
+      brand,
+    },
+  }));
+
+  return paths;
+}
+
+const { brand } = Astro.props;
+---
+
+<style>
+  h2 {
+    font-size: var(--fs-l);
+    font-weight: bold;
+    margin-bottom: var(--s1);
+    color: white;
+  }
+
+  span {
+    color: var(--c-primary);
+  }
+</style>
+<Layout pageTitle={brand.name}>
+  <h2>Guitars in the <span>{brand.name}</span> category</h2>
+  <GuitarList guitars={brand.guitars} />
+</Layout>
